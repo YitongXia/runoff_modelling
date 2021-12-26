@@ -172,25 +172,11 @@ void output_tiff(std::string filename, Raster input_raster,int max_x, int max_y)
     geotiffDataset->SetProjection(gribDataset->GetProjectionRef());
     unsigned int* rowBuff = (unsigned int*)CPLMalloc(sizeof(unsigned int) * nYSize);
 
- /*   for (int j = 0; j < nYSize; j++) {
+    for (int j = 0; j < nYSize; j++) {
         for (int i = 0; i < nXSize; i++) {
             rowBuff[i] = (unsigned int)input_raster(i, j);
         }
         geotiffDataset->GetRasterBand(1)->RasterIO(GF_Write, 0, j, nYSize, 1, rowBuff, nYSize, 1, GDT_Int32, 0, 0);
-    }*/
-
-    unsigned int* output_line((unsigned int*)CPLMalloc(sizeof(unsigned int) * nXSize));
-
-    for (int current_scanline = 0; current_scanline != nYSize; ++current_scanline)
-    {
-        input_raster.output_accumulation(current_scanline, output_line); // first assign the values to line[i]
-
-        if (geotiffDataset->GetRasterBand(1)->RasterIO(GF_Write, 0, current_scanline, nXSize, 1,
-            output_line, nXSize, 1, GDT_UInt32, 0, 0) != CPLE_None) // write the values into the raster file
-        {
-            std::cerr << "Couldn't load output_line " << current_scanline << '\n';
-        }
-
     }
 
     GDALClose(gribDataset);
